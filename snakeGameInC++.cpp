@@ -75,12 +75,16 @@ void fruit(char a[n][m])
 {
 	int fr;
 	int fc;
+	fr=rand()%n;			
+	fc=rand()%m;
 	//--> vector for dynamic allocation
 	vector<int> vrow;
-	vector<int> vcol;
-	fr=rand()%n;			
-	fc=rand()%m;		
-	// vrow having rows of snake and same for vcol.
+	vector<int> vcol;		
+	// vrow having rows of snake and same for vcol
+	//-->rows and cols other than snake vr,vc.
+	vector<int> vr;		
+	vector<int> vc;
+	
 	queue<X> temp=q;
 	while(temp.empty()){
 		X x=temp.front();
@@ -88,40 +92,31 @@ void fruit(char a[n][m])
 		vcol.push_back(x.c);
 		temp.pop();
 	}
-	// now creating two arrays contains track of those rows cols which are not part of snake.
-	vector <int> vr,vc;
-	bool isRow=false;
-	for(int i=0,j=0;i<n;i++)
+	for(int i=0,j=0;i<n ;i++)
 	{
-		if(vrow[i]==fr)
-		{
-			isRow=true;
-		}
-		else{
-			vr[j]=i;
+		if(j<vrow.size() && vrow[j]==i)
 			j++;
+		else{
+			vr.push_back(i);
 		}
 	}
-	bool isCol=false;
-	for(int i=0,j=0;i<m;i++)
+	for(int i=0,j=0; i<m; i++)
 	{
-		if(vcol[i]==fc)
-		{
-			isCol=true;
-		}
-		else{
-			vc[j]=i;
+		if(j<vcol.size() && vcol[j]==i)
 			j++;
+		else{
+			vc.push_back(i);
 		}
 	}
-// logic to avoid overriding positions of fruit & snake
-//------> if row matched then column shouldnot matched with any excluded position(stored in vector) and vice-versa.
-	
-	if(isRow==true){		//--->fr is on snake.
-		int s=vc.size();
-		fc=vc[rand()%s];	//-->change on col coords.
-	}
-	
+	for(int i=0;i<vrow.size();i++)		//---> size of vrow and vcol will same, storing coordinates of snake.
+	{
+		int s=vr.size();
+		int s1=vc.size();
+		while(vrow[i]==fr && vcol[i]==fc){
+			fr=vr[rand()%s];
+			fc=vc[rand()%s1];
+		}
+	}	
 	a[fr][fc]='@';
 }
 
@@ -130,7 +125,7 @@ return 1 game in progress
 return -1 game over
 *******************************/
 
-int  movement(char a[][m], char move)
+int  movement(char a[n][m], char move)
 {
 	bool isFruit = false;		
 	// obj x2 to move head to new pos.
@@ -202,10 +197,9 @@ void  grid(char a[n][m])
 	system("cls");
 	char move;		//--> move w, a, s, d.
 	cout<<"---------"<<endl;
-	int i,j;
-	for( i=0;i<n;i++)
+	for( int i=0;i<n;i++)
 	{	cout<<"|";
-		for(int j=0;j<m;j++)
+		for(int  j=0;j<m;j++)
 		{
 			cout<<a[i][j];
 		}	
